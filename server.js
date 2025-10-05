@@ -40,6 +40,31 @@ const web3 = new Web3('http://127.0.0.1:7545');
 
 const contractABI = [
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "action",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "Action",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "string",
@@ -338,6 +363,21 @@ app.get('/', (req, res) => {
 // ================== //
 // === API ROUTES === //
 // ================== //
+
+// --- [NEW] BLOCKCHAIN EVENT HISTORY ROUTE ---
+app.get('/api/blockchain-events', authenticateToken, async (req, res) => {
+    try {
+        const events = await contract.getPastEvents('Action', {
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
+        res.json(events);
+    } catch (error) {
+        console.error('Failed to fetch blockchain events:', error);
+        res.status(500).json({ error: 'Failed to fetch blockchain events.' });
+    }
+});
+
 
 // --- AI-POWERED PRESCRIPTION ANALYSIS ROUTE ---
 app.post('/api/ai/analyze-prescription/:patientId', authenticateToken, async (req, res) => {

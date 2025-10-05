@@ -22,6 +22,7 @@
             <h1 id="hospital-name">Hospital Dashboard</h1>
             <div class="header-actions d-flex">
                 <button class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#doctorManagementModal">Doctor Management</button>
+                <button id="tx-history-btn" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#txHistoryModal">Transaction History</button>
                 <button id="logout-btn" class="btn btn-outline-danger">Logout</button>
             </div>
         </header>
@@ -72,6 +73,29 @@
                                 </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="txHistoryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Blockchain Transaction History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Transaction Hash</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tx-history-body"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -243,6 +267,36 @@
                 alert('Failed to update doctor status.');
             });
         }
+
+        // --- [NEW] Transaction History Logic ---
+        document.getElementById('tx-history-btn').addEventListener('click', () => {
+            const txHistoryBody = document.getElementById('tx-history-body');
+            txHistoryBody.innerHTML = '<tr><td colspan="3" class="text-center">Loading...</td></tr>';
+            fetch('/api/blockchain-events', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(events => {
+                txHistoryBody.innerHTML = '';
+                if (events.length === 0) {
+                    txHistoryBody.innerHTML = '<tr><td colspan="3" class="text-center">No transactions found.</td></tr>';
+                    return;
+                }
+                events.forEach(event => {
+                    const row = `
+                        <tr>
+                            <td>${event.transactionHash.substring(0, 10)}...</td>
+                            <td>${event.returnValues.action}</td>
+                            <td>${new Date(event.returnValues.timestamp * 1000).toLocaleString()}</td>
+                        </tr>
+                    `;
+                    txHistoryBody.innerHTML += row;
+                });
+            })
+            .catch(error => {
+                txHistoryBody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">${error.message}</td></tr>`;
+            });
+        });
     </script>
 </body>
 </html>
