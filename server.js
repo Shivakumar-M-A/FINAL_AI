@@ -275,10 +275,10 @@ const contractABI = [
 		"stateMutability": "view",
 		"type": "function"
 	}
-];
-const contractAddress = '0x56D4D335183a96365Cb62862a35871a6d8A0B124'; // The new address after deployment
-const senderAddress = '0xf3dCb83f692E50145055b6b241B88c6f98D8ce99';
-const privateKey = '0x520f22b03f93599f38a90a6e0c8494950c0f754c7c5f5f659687b61f2d77375e';
+]
+const contractAddress = '0xE20fFa407e52cB4A44EeD9Bc9C40937A9c72F27C'; // The new address after deployment
+const senderAddress = '0x39920E5B400b5987173Ef3E1B5D6DDF56c8a2099';
+const privateKey = '0x2de2c3b40df9ad20f2624dfea02ff2901fb5dd3b5cb13d81f052df0ed4711a2b';
 const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // --- FILE UPLOAD & JWT SETUP ---
@@ -406,6 +406,7 @@ app.post('/api/ai/analyze-prescription/:patientId', authenticateToken, async (re
             3.  **Rewritten Prescription**: Provide a final, rewritten version of the prescription that incorporates your suggestions. If no changes are needed, state that the draft prescription appears appropriate.
 
             Present the output clearly under the headings: "Potential Issues", "Suggested Modifications", and "Rewritten Prescription".
+            KEEP IT SHORT AS POSSIBLE 
         `;
         const prescriptionAnalysis = await callGeminiApi(analysisPrompt);
         

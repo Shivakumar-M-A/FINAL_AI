@@ -285,11 +285,11 @@
 	},
 	"sources": {
 		"MedicalRecord.sol": {
-			"keccak256": "0xa3fac826a79be87d9e22f0a98942b3801db62a86271d28252a13acbc0a56d42b",
+			"keccak256": "0x5a2d3b3b680b81243efc891b6cfc11bd6c81d615d132082410c4a52e86fe4124",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://73c87925b0ea8b51fde125c86f767aa8ae2e9a094256d9f44030fbeec166f613",
-				"dweb:/ipfs/QmQQVV1qduqF4XSvhSwV9M1hwCqkQgYZWcuTGjDEsM9L2J"
+				"bzz-raw://4949d62ce90b51d85151a73aff767a86f38949ff69f46b4af7c9c29d64b34d01",
+				"dweb:/ipfs/QmbtnXRZ8webGdcMQrhFevfgUR8TYqCiDtoM1MJVmtqBCH"
 			]
 		}
 	},
