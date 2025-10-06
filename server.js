@@ -301,7 +301,7 @@ const contractABI = [
 		"type": "function"
 	}
 ]
-const contractAddress = '0xE20fFa407e52cB4A44EeD9Bc9C40937A9c72F27C'; // The new address after deployment
+const contractAddress = '0x5043731C505490D0c3654392DD78249E96D3Fe43'; // The new address after deployment
 const senderAddress = '0x39920E5B400b5987173Ef3E1B5D6DDF56c8a2099';
 const privateKey = '0x2de2c3b40df9ad20f2624dfea02ff2901fb5dd3b5cb13d81f052df0ed4711a2b';
 const contract = new web3.eth.Contract(contractABI, contractAddress);
@@ -523,13 +523,27 @@ app.post('/api/ai/summarize-single-prescription', authenticateToken, async (req,
 // --- AUTH ROUTES ---
 app.post('/api/patient/register', async (req, res) => {
     try {
-        const { name, email, password, contact_number, address, gender, dob } = req.body;
+        // 1. Added 'wallet_address' to capture it from the form
+        const { name, email, password, contact_number, address, gender, dob, wallet_address } = req.body;
+        
         const [existing] = await db.query('SELECT email FROM patient WHERE email = ?', [email]);
-        if (existing.length > 0) return res.status(409).json({ error: 'An account with this email already exists.' });
+        if (existing.length > 0) {
+            return res.status(409).json({ error: 'An account with this email already exists.' });
+        }
+        
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [result] = await db.query( 'INSERT INTO patient (name, email, password, contact_number, address, gender, dob) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, email, hashedPassword, contact_number, address, gender, dob] );
+        
+        // 2. Added 'wallet_address' to the database INSERT query
+        const [result] = await db.query(
+            'INSERT INTO patient (name, email, password, contact_number, address, gender, dob, wallet_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+            [name, email, hashedPassword, contact_number, address, gender, dob, wallet_address]
+        );
+        
         res.status(201).json({ message: 'Patient registered successfully!', patientId: result.insertId });
-    } catch (error) { res.status(500).json({ error: 'Database error during registration.' }); }
+    } catch (error) { 
+        console.error('Patient registration error:', error); // Added for better debugging
+        res.status(500).json({ error: 'Database error during registration.' }); 
+    }
 });
 app.post('/api/patient/login', async (req, res) => {
     try {
@@ -545,20 +559,29 @@ app.post('/api/patient/login', async (req, res) => {
 });
 app.post('/api/doctor/register', async (req, res) => {
     try {
-        const { name, email, password, contact_number, specialization, availability_status, hospital_name } = req.body;
+        // 1. Added 'wallet_address' to capture it from the form
+        const { name, email, password, contact_number, specialization, availability_status, hospital_name, wallet_address } = req.body;
+        
         const [existing] = await db.query('SELECT email FROM doctor WHERE email = ?', [email]);
-        if (existing.length > 0) return res.status(409).json({ error: 'A doctor with this email already exists.' });
+        if (existing.length > 0) {
+            return res.status(409).json({ error: 'A doctor with this email already exists.' });
+        }
+        
         const hashedPassword = await bcrypt.hash(password, 10);
+        
+        // 2. Added 'wallet_address' to the database INSERT query
         const [result] = await db.query(
-            'INSERT INTO doctor (name, email, password, contact_number, specialization, availability_status, hospital_name, verification_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [name, email, hashedPassword, contact_number, specialization, availability_status, hospital_name, 'Pending']
+            'INSERT INTO doctor (name, email, password, contact_number, specialization, availability_status, hospital_name, verification_status, wallet_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [name, email, hashedPassword, contact_number, specialization, availability_status, hospital_name, 'Pending', wallet_address]
         );
+        
         res.status(201).json({ message: 'Doctor registered successfully! Your registration is pending approval from the hospital.', doctorId: result.insertId });
     } catch (error) {
         console.error('Doctor registration error:', error);
         res.status(500).json({ error: 'Database error during doctor registration.' });
     }
 });
+
 app.post('/api/doctor/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -582,14 +605,29 @@ app.post('/api/doctor/login', async (req, res) => {
 });
 app.post('/api/hospital/register', async (req, res) => {
     try {
-        const { hospital_name, email, password, phone, address, num_beds, specialties } = req.body;
+        // 1. Added 'wallet_address' to capture it from the form
+        const { hospital_name, email, password, phone, address, num_beds, specialties, wallet_address } = req.body;
+        
         const [existing] = await db.query('SELECT email FROM hospitals WHERE email = ?', [email]);
-        if (existing.length > 0) return res.status(409).json({ error: 'A hospital with this email already exists.' });
+        if (existing.length > 0) {
+            return res.status(409).json({ error: 'A hospital with this email already exists.' });
+        }
+        
         const hashedPassword = await bcrypt.hash(password, 10);
-        const [result] = await db.query( 'INSERT INTO hospitals (hospital_name, email, password, phone, address, num_beds, specialties) VALUES (?, ?, ?, ?, ?, ?, ?)', [hospital_name, email, hashedPassword, phone, address, num_beds, specialties] );
+        
+        // 2. Added 'wallet_address' to the database INSERT query
+        const [result] = await db.query(
+            'INSERT INTO hospitals (hospital_name, email, password, phone, address, num_beds, specialties, wallet_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [hospital_name, email, hashedPassword, phone, address, num_beds, specialties, wallet_address]
+        );
+        
         res.status(201).json({ message: 'Hospital registered successfully!', hospitalId: result.insertId });
-    } catch (error) { res.status(500).json({ error: 'Database error during hospital registration.' }); }
+    } catch (error) { 
+        console.error('Hospital registration error:', error);
+        res.status(500).json({ error: 'Database error during hospital registration.' }); 
+    }
 });
+
 app.post('/api/hospital/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -886,6 +924,83 @@ app.get('/api/history/:patientId', authenticateToken, async (req, res) => {
         res.status(500).json({ error: e.message });
     }
 });
+
+// In server.js
+
+// --- [NEW] API endpoint to get user-specific transaction history ---
+// In server.js
+
+// In server.js
+
+// --- [REPLACE THIS ENTIRE ROUTE WITH THE CODE BELOW] ---
+// API endpoint to get user-specific transaction history
+app.get('/api/history', authenticateToken, async (req, res) => {
+    try {
+        const { id, type } = req.user;
+
+        // Step 1: Get the current user's wallet address from the database
+        let query;
+        switch (type) {
+            case 'patient':
+                query = 'SELECT wallet_address FROM patient WHERE patient_id = ?';
+                break;
+            case 'doctor':
+                query = 'SELECT wallet_address FROM doctor WHERE doctor_id = ?';
+                break;
+            case 'hospital':
+                // Even if hospitals have no on-chain actions, this prevents errors
+                query = 'SELECT wallet_address FROM hospitals WHERE id = ?';
+                break;
+            default:
+                return res.status(400).json({ success: false, message: 'Invalid user type.' });
+        }
+
+        const [rows] = await db.query(query, [id]);
+        if (rows.length === 0 || !rows[0].wallet_address) {
+            return res.status(404).json({ success: false, message: 'User wallet address not found in the database.' });
+        }
+        const userWalletAddress = rows[0].wallet_address.toLowerCase();
+
+        // Step 2: Fetch all 'Action' events from the blockchain
+        let events = await contract.getPastEvents('Action', {
+            fromBlock: 0,
+            toBlock: 'latest'
+        });
+        
+        // --- THIS IS THE CRITICAL FIX ---
+        // If the blockchain returns a single event object instead of an array,
+        // we turn it into an array with one item.
+        if (events && !Array.isArray(events)) {
+            events = [events];
+        } else if (!events) {
+            // If no events are found at all, ensure it's an empty array
+            events = [];
+        }
+        // --- END OF FIX ---
+
+        // Step 3: Filter events to find the ones related to the current user
+        const userHistory = events
+            .filter(event => event.returnValues.user.toLowerCase() === userWalletAddress)
+            .map(event => {
+                // Step 4: Format the event data for a clean frontend display
+                return {
+                    transactionHash: event.transactionHash,
+                    action: event.returnValues.action,
+                    timestamp: new Date(parseInt(event.returnValues.timestamp.toString()) * 1000).toLocaleString()
+                };
+            });
+
+        // Step 5: Send the filtered history, reversed to show the newest first
+        res.json({ success: true, history: userHistory.reverse() });
+
+    } catch (error) {
+        // Provide more detailed error logging on the server
+        console.error('CRITICAL ERROR in /api/history:', error);
+        res.status(500).json({ success: false, message: 'An internal server error occurred while fetching history.' });
+    }
+});
+
+
 
 
 // ====================== //

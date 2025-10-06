@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Doctor Registration - Medi Fusion</title>
+<title>Doctor Registration - MediChain</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
   body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #1d3557, #457b9d);
@@ -14,37 +14,60 @@
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    box-sizing: border-box;
   }
   .container {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 40px;
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    background: rgba(255, 255, 255, 0.98);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     width: 100%;
-    max-width: 450px;
+    max-width: 420px;
   }
-  h1 { text-align: center; color: #19334f; margin-bottom: 30px; }
-  label { font-weight: 600; color: #405c77; display: block; margin-top: 15px; }
+  h1 {
+    font-weight: 700;
+    text-align: center;
+    color: #19334f;
+    margin-bottom: 35px;
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #405c77;
+  }
   input, select {
     width: 100%;
-    padding: 12px;
-    margin-top: 5px;
+    padding: 14px;
+    margin-bottom: 22px;
     border: 2px solid #bccad6;
-    border-radius: 12px;
+    border-radius: 14px;
+    font-size: 1rem;
     box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+  input:focus, select:focus {
+    border-color: #457b9d;
+    outline: none;
+    box-shadow: 0 0 8px rgba(69, 123, 157, 0.3);
   }
   button {
     width: 100%;
-    padding: 15px;
-    margin-top: 30px;
-    background: linear-gradient(145deg, #1d3557, #457b9d);
-    color: white;
-    font-size: 1.1rem;
+    background: linear-gradient(135deg, #1d3557, #457b9d);
     border: none;
-    border-radius: 20px;
+    border-radius: 16px;
+    padding: 16px 0;
+    color: white;
+    font-size: 1.15rem;
+    font-weight: 700;
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-   .back-link {
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  .login-link {
     display: block;
     color: #1d3557;
     text-decoration: none;
@@ -52,59 +75,58 @@
     margin-top: 20px;
     text-align: center;
   }
-  #message {
-    margin-bottom: 1em;
-    padding: 1em;
-    border-radius: 5px;
-    display: none;
-    text-align: center;
-  }
-  .success { background-color: #d4edda; color: #155724; }
-  .error { background-color: #f8d7da; color: #721c24; }
+    #message {
+        margin-bottom: 1em;
+        padding: 1em;
+        border-radius: 8px;
+        display: none;
+        text-align: center;
+        font-weight: 600;
+    }
+    .success { background-color: #d4edda; color: #155724; }
+    .error { background-color: #f8d7da; color: #721c24; }
 </style>
 </head>
 <body>
   <div class="container">
     <h1>Doctor Registration</h1>
     <form id="register-form">
-        <div id="message"></div>
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" placeholder="Enter your name" required />
+      <div id="message"></div>
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required placeholder="e.g., Dr. Sandeep Kumar" />
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required />
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required placeholder="your.work@email.com"/>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" placeholder="Create a secure password" required />
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required placeholder="Choose a secure password"/>
 
-      <label for="contact_number">Contact Number:</label>
-      <input type="tel" id="contact_number" name="contact_number" placeholder="Enter contact number" required />
+      <label for="contact_number">Contact Number</label>
+      <input type="tel" id="contact_number" name="contact_number" pattern="[0-9]{10}" required placeholder="10-digit mobile number"/>
 
-      <label for="specialization">Specialization:</label>
-      <input type="text" id="specialization" name="specialization" placeholder="Your specialization" required />
+      <label for="specialization">Specialization</label>
+      <input type="text" id="specialization" name="specialization" required placeholder="e.g., Cardiologist"/>
+      
+      <label for="hospital_name">Hospital Name</label>
+      <input type="text" id="hospital_name" name="hospital_name" required placeholder="e.g., KIMS Hospital"/>
 
-      <label for="hospital_name">Hospital Name:</label>
-      <input type="text" id="hospital_name" name="hospital_name" placeholder="Enter your hospital's name" required />
-
-      <label for="availability_status">Availability Status:</label>
+      <label for="availability_status">Availability Status</label>
       <select id="availability_status" name="availability_status" required>
-        <option value="Available">Available</option>
-        <option value="Unavailable">Unavailable</option>
+          <option value="Available">Available</option>
+          <option value="Unavailable">Unavailable</option>
       </select>
 
-      <button type="submit">Register</button>
+      <button type="submit">Request Registration</button>
     </form>
-    <a href="/index.html" class="back-link">Back to Home</a>
+    <a href="/doctor_login.html" class="login-link">Already registered? Log In</a>
   </div>
-
   <script>
-      document.getElementById('register-form').addEventListener('submit', async (event) => {
+      document.getElementById('register-form').addEventListener('submit', async function(event) {
           event.preventDefault();
-          
-          const form = event.target;
-          const formData = new FormData(form);
+          const msgDiv = document.getElementById('message');
+          msgDiv.style.display = 'none';
+          const formData = new FormData(this);
           const data = Object.fromEntries(formData.entries());
-          const messageDiv = document.getElementById('message');
 
           try {
               const response = await fetch('/api/doctor/register', {
@@ -112,29 +134,18 @@
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify(data)
               });
-
               const result = await response.json();
-
-              if (response.ok) {
-                  messageDiv.textContent = 'Registration successful! Please log in.';
-                  messageDiv.className = 'success';
-                  form.reset();
-                   setTimeout(() => {
-                      window.location.href = '/doctor_login.html';
-                  }, 2000);
-              } else {
-                  messageDiv.textContent = result.error || 'Registration failed.';
-                  messageDiv.className = 'error';
-              }
-              messageDiv.style.display = 'block';
-
+              if (!response.ok) throw new Error(result.error || 'Registration failed');
+              msgDiv.textContent = result.message;
+              msgDiv.className = 'success';
+              setTimeout(() => { window.location.href = '/doctor_login.html'; }, 3000);
           } catch (error) {
-              console.error('Registration error:', error);
-              messageDiv.textContent = 'An error occurred. Please try again.';
-              messageDiv.className = 'error';
-              messageDiv.style.display = 'block';
+              msgDiv.textContent = 'Error: ' + error.message;
+              msgDiv.className = 'error';
           }
+          msgDiv.style.display = 'block';
       });
   </script>
 </body>
 </html>
+
